@@ -2,6 +2,11 @@ import React from "react";
 import data from "./data";
 import "./App.css";
 
+
+let sortedData = data.slice().sort((a, b) => a - b)
+
+
+
 class App extends React.Component {
   state = {
     number: 0,
@@ -23,6 +28,39 @@ class App extends React.Component {
     return;
   };
 
+  binarySearch = (start, end, counter = 1) => {
+    let value = this.state.number;
+    let array = sortedData;
+    
+
+    var start = start === undefined ? 0 : start;
+    var end = end === undefined ? array.length : end;
+
+    console.log('Start:', start, 'End:', end)
+
+    if (start > end) {
+      this.setState({message: `After ${counter} tries, ${value} was not found :(`})  
+      return -1;
+    }
+
+    const index = Math.floor((start + end) / 2);
+    const item = array[index];
+
+    console.log(start, end);
+    if (item == value) {
+        this.setState({message: `It took ${counter} tries to find ${value}!`})
+        return index;
+    }
+    else if (item < value) {
+        counter++
+        return this.binarySearch(index + 1, end, counter);
+    }
+    else if (item > value) {
+        counter++
+        return this.binarySearch(start, index - 1, counter);
+    }
+};
+
   render() {
     return (
       <div className="App">
@@ -38,7 +76,10 @@ class App extends React.Component {
           >
             Linear search
           </button>
-          <button>Binary search</button>
+          <button
+            type="button"
+            onClick={e => this.binarySearch()}
+          >Binary search</button>
 
           <p>{this.state.message}</p>
         </header>
